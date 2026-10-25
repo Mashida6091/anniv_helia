@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: 'Poppins', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: 'Dancing Script', 'Poppins', cursive;
+  }
+
+  @keyframes float-up {
+    0% {
+      transform: translateY(100vh) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-20vh) translateX(var(--drift, 30px)) rotate(var(--spin, 20deg));
+      opacity: 0;
+    }
+  }
+  .animate-float-up {
+    animation: float-up linear infinite;
+  }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+  .animate-sway {
+    animation: sway 4s ease-in-out infinite;
+    transform-origin: top center;
+  }
+
+  @keyframes flicker {
+    0%, 100% { transform: scale(1) rotate(-1deg); opacity: 1; }
+    25% { transform: scale(1.1) rotate(2deg); opacity: 0.9; }
+    50% { transform: scale(0.95) rotate(-2deg); opacity: 1; }
+    75% { transform: scale(1.05) rotate(1deg); opacity: 0.95; }
+  }
+  .animate-flicker {
+    animation: flicker 0.4s ease-in-out infinite;
+  }
+
+  @keyframes rise {
+    0% { transform: translateY(0); opacity: 0.8; }
+    100% { transform: translateY(-40px); opacity: 0; }
+  }
+  .animate-rise {
+    animation: rise 1.2s ease-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  .animate-heartbeat {
+    animation: heartbeat 1.4s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .animate-shimmer {
+    background-size: 200% auto;
+    animation: shimmer 4s linear infinite;
+  }
+
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out both;
+  }
+}
