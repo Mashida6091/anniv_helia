@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Heart, Sparkles } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import MediaUploadCard from './components/MediaUploadCard';
+import SharePage from './components/SharePage';
 import TableGallery from './components/TableGallery';
 import MusicToggle from './components/MusicToggle';
 
@@ -38,7 +38,7 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        <MediaUploadCard onUploaded={handleUploaded} />
+        <SharePage onUploaded={handleUploaded} />
         <TableGallery
           activeTable={activeTable}
           refreshKey={refreshKey}
