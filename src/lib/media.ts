@@ -14,8 +14,8 @@ export type MediaItem = {
   created_at: string;
 };
 
-const MAX_BYTES = 50 * 1024 * 1024 * 1024; // 50 Go, aligné sur la limite Supabase Storage (TUS)
-export const MAX_LABEL = '50 Go';
+const MAX_BYTES = 50 * 1024 * 1024; // Plafond par défaut Supabase Free
+export const MAX_LABEL = '50 Mo';
 
 const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
@@ -46,6 +46,38 @@ export function validateFile(file: File): string | null {
     return `Le fichier est trop lourd (maximum ${MAX_LABEL}).`;
   }
   return null;
+}
+
+export function uploadErrorMessage(error: unknown): string {
+  const tusError = error as {
+    message?: string;
+    status?: number;
+    statusCode?: number;
+    originalResponse?: { getStatus?: () => number; getBody?: () => string };
+  };
+  const status =
+    tusError?.originalResponse?.getStatus?.() ?? tusError?.statusCode ?? tusError?.status;
+  const details = [
+    tusError?.message,
+    tusError?.originalResponse?.getBody?.(),
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+
+  if (
+    status === 413 ||
+    /payload too large|entity too large|maximum allowed size|file size limit|exceed.{0,20}(size|limit)/.test(details)
+  ) {
+    return "La vidéo dépasse la limite de stockage autorisée. Sur Supabase Free, elle est de 50 Mo ; essaie un fichier plus court ou compressé.";
+  }
+  if (status === 401 || status === 403) {
+    return "Le stockage a refusé l'envoi. Vérifie la configuration des autorisations Supabase.";
+  }
+  if (status === 404) {
+    return "L'espace de stockage des vidéos est introuvable. Vérifie que le bucket « party-videos » existe dans Supabase.";
+  }
+  return "L'envoi a échoué. Vérifie ta connexion puis réessaie.";
 }
 
 export function publicUrl(item: Pick<MediaItem, 'kind' | 'storage_path'>): string {
