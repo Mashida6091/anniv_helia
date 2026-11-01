@@ -4,7 +4,7 @@ import { fileURLToPath, URL } from 'node:url';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/anniv_helia/', // <-- Ajoutez cette ligne ici
+  base: './',
   plugins: [react()],
   resolve: {
     alias: {
