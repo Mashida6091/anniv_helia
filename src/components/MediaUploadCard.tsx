@@ -8,6 +8,7 @@ import {
   getMediaKind,
   saveMediaRecord,
   startUpload,
+  uploadErrorMessage,
   validateFile,
 } from '@/lib/media';
 
@@ -62,9 +63,9 @@ export default function MediaUploadCard({ tableNumber, onUploaded }: MediaUpload
       resetPending();
       setSent(true);
       onUploaded(tableNumber);
-    } catch {
+    } catch (uploadError) {
       resetPending();
-      setError("L'envoi a échoué. Réessaie dans un instant.");
+      setError(uploadErrorMessage(uploadError));
     }
   };
 
