@@ -10,99 +10,86 @@ const ADMIN_CODE = Deno.env.get('ADMIN_DELETE_CODE');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
+const MEDIA_TARGETS = {
+  photo: { table: 'party_photos', bucket: 'party-photos' },
+  video: { table: 'party_videos', bucket: 'party-videos' },
+} as const;
+
+const json = (body: unknown, status: number) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return json({ error: 'Method not allowed' }, 405);
   }
 
   try {
     if (!ADMIN_CODE) {
-      return new Response(JSON.stringify({ error: 'Server not configured' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Server not configured' }, 500);
     }
 
     const body = await req.json().catch(() => null);
     if (!body || typeof body !== 'object') {
-      return new Response(JSON.stringify({ error: 'Invalid request body' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Invalid request body' }, 400);
     }
 
-    const { code, photoId, storagePath } = body as {
+    const { code, kind, mediaId, storagePath } = body as {
       code?: string;
-      photoId?: string;
+      kind?: string;
+      mediaId?: string;
       storagePath?: string;
     };
 
     if (!code) {
-      return new Response(JSON.stringify({ error: 'Missing admin code' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Missing admin code' }, 400);
     }
 
     // Constant-time comparison to avoid timing leaks.
     const a = new TextEncoder().encode(String(code));
     const b = new TextEncoder().encode(ADMIN_CODE);
     if (a.length !== b.length) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Unauthorized' }, 401);
     }
     let diff = 0;
     for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
     if (diff !== 0) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Unauthorized' }, 401);
     }
 
     // Verify-only mode: caller just wants to check the code.
-    if (photoId === '__verify__' || !photoId || !storagePath) {
-      return new Response(JSON.stringify({ ok: true, verified: true }), {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    if (mediaId === '__verify__' || !mediaId || !storagePath) {
+      return json({ ok: true, verified: true }, 200);
     }
+
+    if (kind !== undefined && kind !== 'photo' && kind !== 'video') {
+      return json({ error: 'Invalid media kind' }, 400);
+    }
+    const target = kind === 'video' ? MEDIA_TARGETS.video : MEDIA_TARGETS.photo;
 
     const admin = createClient(SUPABASE_URL!, SERVICE_ROLE_KEY!, {
       auth: { persistSession: false },
     });
 
     const { error: dbErr } = await admin
-      .from('party_photos')
+      .from(target.table)
       .delete()
-      .eq('id', photoId);
+      .eq('id', mediaId);
 
     if (dbErr) {
-      return new Response(
-        JSON.stringify({ error: 'Failed to delete photo record' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      return json({ error: 'Failed to delete media record' }, 500);
     }
 
-    await admin.storage.from('party-photos').remove([storagePath]);
+    await admin.storage.from(target.bucket).remove([storagePath]);
 
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return json({ ok: true }, 200);
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return json({ error: err instanceof Error ? err.message : 'Unknown error' }, 500);
   }
 });

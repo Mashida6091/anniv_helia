@@ -1,9 +1,9 @@
+import { useState } from 'react';
 import { Heart, Sparkles } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import PhotoWall from './components/PhotoWall';
-import VideoWall from './components/VideoWall';
-import MediaMosaic from './components/MediaMosaic';
+import MediaUploadCard from './components/MediaUploadCard';
+import TableGallery from './components/TableGallery';
 import MusicToggle from './components/MusicToggle';
 
 function Footer() {
@@ -25,14 +25,25 @@ function Footer() {
 }
 
 function App() {
+  const [activeTable, setActiveTable] = useState(1);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleUploaded = (tableNumber: number) => {
+    setActiveTable(tableNumber);
+    setRefreshKey((k) => k + 1);
+  };
+
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-marron-50 via-kaki-50 to-marron-50 text-gray-800">
       <Navbar />
       <main>
         <Hero />
-        <PhotoWall />
-        <VideoWall />
-        <MediaMosaic />
+        <MediaUploadCard onUploaded={handleUploaded} />
+        <TableGallery
+          activeTable={activeTable}
+          refreshKey={refreshKey}
+          onSelectTable={setActiveTable}
+        />
       </main>
       <Footer />
 

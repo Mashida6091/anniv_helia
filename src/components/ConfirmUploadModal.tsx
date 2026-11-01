@@ -3,9 +3,7 @@ import { Loader2 } from 'lucide-react';
 type ConfirmUploadModalProps = {
   open: boolean;
   title: string;
-  fileName: string;
-  fileSize: string;
-  guestName: string;
+  meta: string;
   uploading: boolean;
   progress: number;
   preview: React.ReactNode;
@@ -13,19 +11,10 @@ type ConfirmUploadModalProps = {
   onConfirm: () => void;
 };
 
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} o`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
-  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
-  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} Go`;
-}
-
 export default function ConfirmUploadModal({
   open,
   title,
-  fileName,
-  fileSize,
-  guestName,
+  meta,
   uploading,
   progress,
   preview,
@@ -40,27 +29,23 @@ export default function ConfirmUploadModal({
       onClick={uploading ? undefined : onCancel}
     >
       <div
+        role="dialog"
+        aria-modal="true"
         className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="border-b border-kaki-100 px-6 py-4">
-          <h3 className="font-display text-xl text-kaki-500">{title}</h3>
-          <p className="mt-0.5 text-xs text-marron-500">
+          <h3 className="font-display text-2xl text-marron-500">{title}</h3>
+          <p className="mt-0.5 text-xs text-marron-500/80">
             Vérifie avant de partager — cette action est définitive.
           </p>
         </div>
 
-        <div className="max-h-[50vh] overflow-auto bg-kaki-50/40">
+        <div className="max-h-[50vh] overflow-auto bg-kaki-50/60">
           <div className="flex items-center justify-center p-4">{preview}</div>
         </div>
 
-        <div className="px-6 py-3 text-sm text-gray-600">
-          <p className="truncate font-medium text-gray-700">{fileName}</p>
-          <p className="text-xs text-marron-500">
-            {fileSize}
-            {guestName ? ` · par ${guestName}` : ' · invité anonyme'}
-          </p>
-        </div>
+        <p className="px-6 py-3 text-xs text-marron-500">{meta}</p>
 
         {uploading && (
           <div className="px-6 pb-2">
@@ -80,7 +65,7 @@ export default function ConfirmUploadModal({
           <button
             onClick={onCancel}
             disabled={uploading}
-            className="flex-1 rounded-full border border-kaki-200 px-4 py-2.5 text-sm font-semibold text-marron-500 transition hover:bg-kaki-50 disabled:opacity-50"
+            className="flex-1 rounded-full border border-kaki-300 px-4 py-2.5 text-sm font-semibold text-marron-500 transition hover:bg-kaki-50 disabled:opacity-50"
           >
             Annuler
           </button>
@@ -103,5 +88,3 @@ export default function ConfirmUploadModal({
     </div>
   );
 }
-
-export { formatBytes };

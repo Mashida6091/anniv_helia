@@ -43,7 +43,7 @@ export default function Hero() {
           style={{ animationDelay: '0.4s' }}
         >
           <a
-            href="#photos"
+            href="#album"
             className="rounded-full border border-kaki-300 bg-white/60 px-7 py-3 font-semibold text-kaki-500 backdrop-blur transition hover:bg-kaki-50"
           >
             Lire les vœux
@@ -53,7 +53,7 @@ export default function Hero() {
 
       {/* scroll hint */}
       <a
-        href="#photos"
+        href="#album"
         className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 text-kaki-400 transition hover:text-kaki-500"
         aria-label="Défiler"
       >

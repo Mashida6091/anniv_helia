@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  Camera,
-  Film,
   Heart,
+  LayoutGrid,
+  Upload,
 } from 'lucide-react';
 
-import { LayoutGrid } from 'lucide-react';
-
 const LINKS = [
-  { href: '#photos', label: 'Vos photos', icon: Camera },
-  { href: '#videos', label: 'Vos vidéos', icon: Film },
-  { href: '#mosaic', label: 'Le mur', icon: LayoutGrid },
+  { href: '#partager', label: 'Partager', icon: Upload },
+  { href: '#album', label: 'Album par table', icon: LayoutGrid },
 ];
 
 export default function Navbar() {
