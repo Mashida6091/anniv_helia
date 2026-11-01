@@ -31,7 +31,7 @@ export default function MusicToggle() {
     <button
       onClick={toggle}
       aria-label={on ? 'Couper la musique' : 'Activer la musique'}
-      className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-pink-500 shadow-lg backdrop-blur-md transition hover:scale-110 active:scale-95"
+      className="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-kaki-600 shadow-lg backdrop-blur-md transition hover:scale-110 active:scale-95"
     >
       {on ? (
         <Music className="h-5 w-5 animate-heartbeat" />

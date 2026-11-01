@@ -37,9 +37,9 @@ export default function Navbar() {
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
         <a
           href="#top"
-          className="flex items-center gap-2 font-display text-2xl text-pink-500"
+          className="flex items-center gap-2 font-display text-2xl text-kaki-500"
         >
-          <Heart className="h-5 w-5 fill-pink-400 text-pink-400" />
+          <Heart className="h-5 w-5 fill-kaki-400 text-kaki-400" />
           Helia
         </a>
 
@@ -51,7 +51,7 @@ export default function Navbar() {
               <li key={l.href}>
                 <a
                   href={l.href}
-                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-rose-500 transition hover:bg-pink-100/60"
+                  className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-marron-500 transition hover:bg-kaki-100/60"
                 >
                   <Icon className="h-4 w-4" />
                   {l.label}
@@ -68,20 +68,20 @@ export default function Navbar() {
           aria-label="Menu"
         >
           <span
-            className={`h-0.5 w-6 bg-pink-500 transition ${open ? 'translate-y-1.5 rotate-45' : ''}`}
+            className={`h-0.5 w-6 bg-kaki-500 transition ${open ? 'translate-y-1.5 rotate-45' : ''}`}
           />
           <span
-            className={`h-0.5 w-6 bg-pink-500 transition ${open ? 'opacity-0' : ''}`}
+            className={`h-0.5 w-6 bg-kaki-500 transition ${open ? 'opacity-0' : ''}`}
           />
           <span
-            className={`h-0.5 w-6 bg-pink-500 transition ${open ? '-translate-y-1.5 -rotate-45' : ''}`}
+            className={`h-0.5 w-6 bg-kaki-500 transition ${open ? '-translate-y-1.5 -rotate-45' : ''}`}
           />
         </button>
       </nav>
 
       {/* mobile menu */}
       {open && (
-        <div className="md:hidden bg-white/90 backdrop-blur-md border-t border-pink-100">
+        <div className="md:hidden bg-white/90 backdrop-blur-md border-t border-kaki-100">
           <ul className="flex flex-col px-6 py-3">
             {LINKS.map((l) => {
               const Icon = l.icon;
@@ -90,7 +90,7 @@ export default function Navbar() {
                   <a
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="flex items-center gap-2 py-2.5 text-rose-500"
+                    className="flex items-center gap-2 py-2.5 text-marron-500"
                   >
                     <Icon className="h-4 w-4" />
                     {l.label}

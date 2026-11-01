@@ -190,10 +190,10 @@ export default function PhotoWall() {
   return (
     <section id="photos" className="relative w-full px-6 py-24">
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-center font-display text-4xl md:text-5xl text-pink-500 mb-3">
+        <h2 className="text-center font-display text-4xl md:text-5xl text-kaki-500 mb-3">
           L’album des invités
         </h2>
-        <p className="mb-10 text-center text-sm text-rose-300/80 max-w-xl mx-auto">
+        <p className="mb-10 text-center text-sm text-marron-500/80 max-w-xl mx-auto">
           Partage les plus beaux souvenirs de l’anniversaire. Glisse une photo
           ci-dessous ou choisis-la — tout le monde pourra la voir.
         </p>
@@ -206,22 +206,22 @@ export default function PhotoWall() {
         >
           <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
             <div>
-              <label className="block text-xs font-medium text-rose-400 mb-1">
+              <label className="block text-xs font-medium text-marron-500 mb-1">
                 Ton nom (optionnel)
               </label>
               <input
                 value={guestName}
                 onChange={(e) => setGuestName(e.target.value)}
                 placeholder="Ex : Tante Sophie"
-                className="w-full rounded-xl border border-pink-200 bg-white/90 px-3 py-2 text-sm text-gray-700 placeholder:text-rose-200 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200"
+                className="w-full rounded-xl border border-kaki-200 bg-white/90 px-3 py-2 text-sm text-gray-700 placeholder:text-marron-200 focus:border-kaki-400 focus:outline-none focus:ring-2 focus:ring-kaki-200"
               />
             </div>
 
             <label
               className={`flex cursor-pointer items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-md transition ${
                 uploading
-                  ? 'bg-pink-300 cursor-wait'
-                  : 'bg-gradient-to-r from-pink-500 to-rose-500 hover:scale-105 active:scale-95'
+                  ? 'bg-kaki-500 cursor-wait'
+                  : 'bg-gradient-to-r from-kaki-600 to-marron-500 hover:scale-105 active:scale-95'
               }`}
             >
               {uploading ? (
@@ -246,14 +246,14 @@ export default function PhotoWall() {
             </label>
           </div>
 
-          <div className="mt-4 flex items-center gap-2 rounded-xl border border-dashed border-pink-200 bg-pink-50/40 px-4 py-3 text-xs text-rose-400">
+          <div className="mt-4 flex items-center gap-2 rounded-xl border border-dashed border-kaki-200 bg-kaki-50/40 px-4 py-3 text-xs text-marron-500">
             <ImagePlus className="h-4 w-4" />
             Tu peux aussi glisser-déposer une image ici. JPG, PNG, WEBP ou GIF —
             50 Mo max.
           </div>
 
           {error && (
-            <p className="mt-3 rounded-xl bg-rose-50 px-4 py-2 text-sm text-rose-500">
+            <p className="mt-3 rounded-xl bg-marron-50 px-4 py-2 text-sm text-marron-500">
               {error}
             </p>
           )}
@@ -262,30 +262,30 @@ export default function PhotoWall() {
         {/* Admin unlock */}
         <div className="mb-10 flex flex-wrap items-center justify-center gap-2 rounded-2xl bg-white/60 px-4 py-3 text-sm backdrop-blur-md">
           {isAdmin ? (
-            <span className="inline-flex items-center gap-1.5 text-rose-500">
+            <span className="inline-flex items-center gap-1.5 text-marron-500">
               <ShieldCheck className="h-4 w-4" />
               Mode organisateur actif — tu peux supprimer des photos.
             </span>
           ) : (
             <>
-              <Lock className="h-4 w-4 text-rose-400" />
+              <Lock className="h-4 w-4 text-marron-500" />
               <input
                 type="password"
                 value={adminCode}
                 onChange={(e) => setAdminCode(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && verifyAdmin()}
                 placeholder="Code organisateur..."
-                className="w-40 rounded-full border border-pink-200 bg-white/90 px-3 py-1.5 text-sm text-gray-700 placeholder:text-rose-200 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-200"
+                className="w-40 rounded-full border border-kaki-200 bg-white/90 px-3 py-1.5 text-sm text-gray-700 placeholder:text-marron-200 focus:border-kaki-400 focus:outline-none focus:ring-2 focus:ring-kaki-200"
               />
               <button
                 onClick={verifyAdmin}
                 disabled={adminBusy || !adminCode}
-                className="rounded-full bg-rose-500 px-4 py-1.5 text-sm font-semibold text-white transition hover:scale-105 active:scale-95 disabled:opacity-50"
+                className="rounded-full bg-marron-500 px-4 py-1.5 text-sm font-semibold text-white transition hover:scale-105 active:scale-95 disabled:opacity-50"
               >
                 {adminBusy ? '…' : 'Déverrouiller'}
               </button>
               {adminError && (
-                <span className="text-rose-500">{adminError}</span>
+                <span className="text-marron-500">{adminError}</span>
               )}
             </>
           )}

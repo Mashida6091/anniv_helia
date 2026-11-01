@@ -59,22 +59,22 @@ export default function MediaMosaic() {
   return (
     <section id="mosaic" className="relative w-full px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <h2 className="text-center font-display text-4xl md:text-5xl text-pink-500 mb-3">
+        <h2 className="text-center font-display text-4xl md:text-5xl text-kaki-500 mb-3">
           Le mur des souvenirs
         </h2>
-        <p className="mb-10 text-center text-sm text-rose-300/80 max-w-xl mx-auto">
+        <p className="mb-10 text-center text-sm text-marron-300/80 max-w-xl mx-auto">
           Toutes les photos et vidéos partagées, mélangées et rangées dans
           l’ordre où elles ont été ajoutées.
         </p>
 
         {loading ? (
-          <div className="flex items-center justify-center py-16 text-rose-400">
+          <div className="flex items-center justify-center py-16 text-marron-500">
             <Loader2 className="h-6 w-6 animate-spin" />
           </div>
         ) : items.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-pink-200 bg-white/50 px-6 py-16 text-center">
-            <ImageOff className="mx-auto mb-3 h-10 w-10 text-pink-300" />
-            <p className="text-rose-400">
+          <div className="rounded-3xl border border-dashed border-kaki-200 bg-white/50 px-6 py-16 text-center">
+            <ImageOff className="mx-auto mb-3 h-10 w-10 text-kaki-300" />
+            <p className="text-marron-500">
               Rien pour l’instant. Partage une photo ou une vidéo plus haut !
             </p>
           </div>
