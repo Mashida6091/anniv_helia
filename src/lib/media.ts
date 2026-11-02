@@ -14,8 +14,10 @@ export type MediaItem = {
   created_at: string;
 };
 
-const MAX_BYTES = 50 * 1024 * 1024; // Plafond par défaut Supabase Free
-export const MAX_LABEL = '50 Mo';
+export const MAX_PHOTO_BYTES = 50 * 1024 * 1024;
+export const MAX_VIDEO_BYTES = 50 * 1024 * 1024 * 1024; // Maximum TUS Supabase: 50 Go
+export const PHOTO_MAX_LABEL = '50 Mo';
+export const VIDEO_MAX_LABEL = '50 Go';
 
 const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 const VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
@@ -39,11 +41,15 @@ export function getMediaKind(file: File): MediaKind | null {
 }
 
 export function validateFile(file: File): string | null {
-  if (!ACCEPTED_TYPES.includes(file.type)) {
+  const kind = getMediaKind(file);
+  if (!kind) {
     return 'Format non supporté. Utilise JPG, PNG, WEBP, GIF, MP4, WEBM ou MOV.';
   }
-  if (file.size > MAX_BYTES) {
-    return `Le fichier est trop lourd (maximum ${MAX_LABEL}).`;
+
+  const maxBytes = kind === 'video' ? MAX_VIDEO_BYTES : MAX_PHOTO_BYTES;
+  const maxLabel = kind === 'video' ? VIDEO_MAX_LABEL : PHOTO_MAX_LABEL;
+  if (file.size > maxBytes) {
+    return `Le fichier est trop lourd (maximum ${maxLabel}).`;
   }
   return null;
 }
@@ -69,7 +75,7 @@ export function uploadErrorMessage(error: unknown): string {
     status === 413 ||
     /payload too large|entity too large|maximum allowed size|file size limit|exceed.{0,20}(size|limit)/.test(details)
   ) {
-    return "La vidéo dépasse la limite de stockage autorisée. Sur Supabase Free, elle est de 50 Mo ; essaie un fichier plus court ou compressé.";
+    return "Le stockage a refusé ce fichier trop volumineux. Supabase Free est limité à 50 Mo ; pour les vidéos jusqu’à 50 Go, la limite globale et celle du bucket party-videos doivent être augmentées sur une offre adaptée.";
   }
   if (status === 401 || status === 403) {
     return "Le stockage a refusé l'envoi. Vérifie la configuration des autorisations Supabase.";
