@@ -3,7 +3,8 @@ import { CheckCircle2, Film, ImagePlus, Loader2, Upload } from 'lucide-react';
 import ConfirmUploadModal from './ConfirmUploadModal';
 import {
   ACCEPTED_TYPES,
-  MAX_LABEL,
+  PHOTO_MAX_LABEL,
+  VIDEO_MAX_LABEL,
   formatBytes,
   getMediaKind,
   saveMediaRecord,
@@ -120,8 +121,8 @@ export default function MediaUploadCard({ tableNumber, onUploaded }: MediaUpload
           <ImagePlus className="mt-0.5 h-4 w-4 shrink-0" />
           <span>
             Tu peux aussi glisser-déposer un fichier ici. Photos JPG, PNG, WEBP,
-            GIF et vidéos MP4, WEBM, MOV — jusqu’à {MAX_LABEL}. L’envoi reprend
-            tout seul en cas de coupure.
+            GIF jusqu’à {PHOTO_MAX_LABEL} ; vidéos MP4, WEBM, MOV jusqu’à {VIDEO_MAX_LABEL}.
+            L’envoi des vidéos reprend tout seul en cas de coupure.
           </span>
         </div>
 
