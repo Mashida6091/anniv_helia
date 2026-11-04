@@ -28,23 +28,12 @@ export default function MediaLightbox({ item, onClose }: MediaLightboxProps) {
       >
         <X className="h-8 w-8" />
       </button>
-      {item.kind === 'photo' ? (
-        <img
-          src={src}
-          alt={item.guest_name ? `Photo de ${item.guest_name}` : 'Photo'}
-          className="max-h-full max-w-full rounded-xl object-contain shadow-2xl"
-          onClick={(e) => e.stopPropagation()}
-        />
-      ) : (
-        <video
-          src={src}
-          controls
-          autoPlay
-          playsInline
-          className="max-h-full max-w-full rounded-xl shadow-2xl"
-          onClick={(e) => e.stopPropagation()}
-        />
-      )}
+      <img
+        src={src}
+        alt={item.guest_name ? `Photo de ${item.guest_name}` : 'Photo'}
+        className="max-h-full max-w-full rounded-xl object-contain shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      />
     </div>
   );
 }
