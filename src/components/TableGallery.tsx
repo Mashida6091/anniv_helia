@@ -3,7 +3,6 @@ import { Images, Loader2, Trash2 } from 'lucide-react';
 import AdminUnlock from './AdminUnlock';
 import MediaLightbox from './MediaLightbox';
 import {
-  TABLE_NUMBERS,
   deleteMedia,
   fetchTableMedia,
   publicUrl,
@@ -11,12 +10,11 @@ import {
 } from '@/lib/media';
 
 type TableGalleryProps = {
-  activeTable: number;
+  tableNumber: number;
   refreshKey: number;
-  onSelectTable: (tableNumber: number) => void;
 };
 
-export default function TableGallery({ activeTable, refreshKey, onSelectTable }: TableGalleryProps) {
+export default function TableGallery({ tableNumber, refreshKey }: TableGalleryProps) {
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,14 +25,14 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    fetchTableMedia(activeTable)
+    fetchTableMedia(tableNumber)
       .then((rows) => {
         if (cancelled) return;
         setItems(rows);
         setError(null);
       })
       .catch(() => {
-        if (!cancelled) setError('Impossible de charger cette table pour l’instant.');
+        if (!cancelled) setError(`Impossible de charger l’album de la table ${tableNumber} pour l’instant.`);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -42,7 +40,7 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
     return () => {
       cancelled = true;
     };
-  }, [activeTable, refreshKey]);
+  }, [tableNumber, refreshKey]);
 
   const handleDelete = async (item: MediaItem) => {
     if (!adminCode) return;
@@ -61,44 +59,34 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
   };
 
   return (
-    <section id="album" className="relative w-full px-6 py-24">
+    <section
+      id={`album-table-${tableNumber}`}
+      className="relative mt-20 w-full scroll-mt-24 border-t border-kaki-200/70 pt-16"
+    >
       <div className="mx-auto max-w-5xl">
-        <h2 className="mb-3 text-center font-display text-4xl text-marron-500 md:text-5xl">
-          L’album par table
-        </h2>
-        <p className="mx-auto mb-10 max-w-xl text-center text-sm text-marron-500/90">
-          Retrouve les photos de chaque table, classées dans l’ordre où elles ont été ajoutées.
-        </p>
-
-        <div
-          role="tablist"
-          aria-label="Tables"
-          className="-mx-6 mb-8 flex gap-2 overflow-x-auto px-6 pb-2 [scrollbar-width:none] md:mx-0 md:flex-wrap md:justify-center md:px-0"
-        >
-          {TABLE_NUMBERS.map((n) => {
-            const selected = n === activeTable;
-            return (
-              <button
-                key={n}
-                role="tab"
-                aria-selected={selected}
-                onClick={() => onSelectTable(n)}
-                className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition duration-300 ${
-                  selected
-                    ? 'bg-gradient-to-r from-kaki-600 to-marron-500 text-white shadow-md'
-                    : 'border border-kaki-200 bg-white/70 text-marron-500 hover:border-kaki-400 hover:bg-white'
-                }`}
-              >
-                Table {n}
-              </button>
-            );
-          })}
+        <div className="mb-10 text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.35em] text-kaki-600">
+            Album de la table
+          </p>
+          <h2 className="mb-3 font-display text-4xl text-marron-500 md:text-5xl">
+            Table {tableNumber}
+          </h2>
+          <p className="mx-auto max-w-xl text-sm text-marron-500/90">
+            Les photos partagées à cette table, classées dans l’ordre où elles ont été ajoutées.
+          </p>
+          <a
+            href="#album"
+            className="mt-5 inline-flex items-center gap-2 rounded-full border border-kaki-200 bg-white/70 px-4 py-2 text-sm font-medium text-marron-500 backdrop-blur transition hover:border-kaki-400 hover:bg-white"
+          >
+            <Images className="h-4 w-4" />
+            Voir la mosaïque complète
+          </a>
         </div>
 
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/60 px-5 py-3 text-sm text-marron-500 backdrop-blur-md">
           <span className="inline-flex items-center gap-2">
             <Images className="h-4 w-4" />
-            {loading ? 'Chargement…' : `${items.length} photo${items.length > 1 ? 's' : ''} à la table ${activeTable}`}
+            {loading ? 'Chargement…' : `${items.length} photo${items.length > 1 ? 's' : ''} à la table ${tableNumber}`}
           </span>
           <AdminUnlock unlocked={!!adminCode} onUnlock={setAdminCode} />
         </div>
@@ -117,8 +105,7 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
           <div className="rounded-3xl border border-dashed border-kaki-300 bg-white/50 px-6 py-16 text-center">
             <Images className="mx-auto mb-3 h-10 w-10 text-kaki-400" />
             <p className="text-marron-500">
-              Aucune photo à la table {activeTable} pour l’instant. Sois la première personne
-              à en partager une !
+              Aucune photo à la table {tableNumber} pour l’instant. Les photos déposées ici apparaîtront dans cet album.
             </p>
           </div>
         ) : (
@@ -130,7 +117,7 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
               >
                 <img
                   src={publicUrl(item)}
-                  alt={item.guest_name || 'Photo'}
+                  alt={item.guest_name ? `Photo de ${item.guest_name}` : `Photo, table ${tableNumber}`}
                   loading="lazy"
                   onClick={() => setLightbox(item)}
                   className="w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-105"

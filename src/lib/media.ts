@@ -137,7 +137,18 @@ export async function fetchTableMedia(tableNumber: number): Promise<MediaItem[]>
   const { data, error } = await supabase
     .from('party_photos')
     .select(columns)
-    .eq('table_number', tableNumber);
+    .eq('table_number', tableNumber)
+    .order('created_at', { ascending: true });
+  if (error) throw new Error('fetch-failed');
+  return data ?? [];
+}
+
+export async function fetchAllMedia(): Promise<MediaItem[]> {
+  const columns = 'id, storage_path, guest_name, table_number, created_at';
+  const { data, error } = await supabase
+    .from('party_photos')
+    .select(columns)
+    .order('created_at', { ascending: true });
   if (error) throw new Error('fetch-failed');
   return data ?? [];
 }
