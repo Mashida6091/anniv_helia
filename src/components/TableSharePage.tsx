@@ -1,11 +1,13 @@
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import MediaUploadCard from './MediaUploadCard';
+import TableGallery from './TableGallery';
 import { TABLE_NUMBERS } from '@/lib/media';
 import { tableHref } from '@/lib/shareRoute';
 
 type TableSharePageProps = {
   tableNumber: number;
   onUploaded: (tableNumber: number) => void;
+  refreshKey: number;
 };
 
 const navButton =
@@ -13,7 +15,11 @@ const navButton =
 const navDisabled =
   'inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-marron-300';
 
-export default function TableSharePage({ tableNumber, onUploaded }: TableSharePageProps) {
+export default function TableSharePage({
+  tableNumber,
+  onUploaded,
+  refreshKey,
+}: TableSharePageProps) {
   const previous = tableNumber > TABLE_NUMBERS[0] ? tableNumber - 1 : null;
   const next = tableNumber < TABLE_NUMBERS[TABLE_NUMBERS.length - 1] ? tableNumber + 1 : null;
 
@@ -61,6 +67,7 @@ export default function TableSharePage({ tableNumber, onUploaded }: TableSharePa
       </div>
 
       <MediaUploadCard tableNumber={tableNumber} onUploaded={onUploaded} />
+      <TableGallery tableNumber={tableNumber} refreshKey={refreshKey} />
     </div>
   );
 }
