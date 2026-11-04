@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import SharePage from './components/SharePage';
 import AllPhotosGallery from './components/AllPhotosGallery';
+import { useShareTable } from '@/lib/shareRoute';
 
 function Footer() {
   return (
@@ -24,6 +25,7 @@ function Footer() {
 }
 
 function App() {
+  const selectedTable = useShareTable();
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleUploaded = () => {
@@ -35,8 +37,12 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        <SharePage onUploaded={handleUploaded} refreshKey={refreshKey} />
-        <AllPhotosGallery refreshKey={refreshKey} />
+        <SharePage
+          selectedTable={selectedTable}
+          onUploaded={handleUploaded}
+          refreshKey={refreshKey}
+        />
+        {selectedTable === null && <AllPhotosGallery refreshKey={refreshKey} />}
       </main>
       <Footer />
     </div>
