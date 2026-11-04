@@ -7,7 +7,7 @@ import {
 
 const LINKS = [
   { href: '#partager', label: 'Partager', icon: Upload },
-  { href: '#album', label: 'Album par table', icon: LayoutGrid },
+  { href: '#album', label: 'Toutes les photos', icon: LayoutGrid },
 ];
 
 export default function Navbar() {
@@ -65,13 +65,17 @@ export default function Navbar() {
           aria-label="Menu"
         >
           <span
-            className={`h-0.5 w-6 bg-kaki-500 transition ${open ? 'translate-y-1.5 rotate-45' : ''}`}
+            className={`h-0.5 w-6 bg-kaki-500 transition ${
+              open ? 'translate-y-1.5 rotate-45' : ''
+            }`}
           />
           <span
             className={`h-0.5 w-6 bg-kaki-500 transition ${open ? 'opacity-0' : ''}`}
           />
           <span
-            className={`h-0.5 w-6 bg-kaki-500 transition ${open ? '-translate-y-1.5 -rotate-45' : ''}`}
+            className={`h-0.5 w-6 bg-kaki-500 transition ${
+              open ? '-translate-y-1.5 -rotate-45' : ''
+            }`}
           />
         </button>
       </nav>
