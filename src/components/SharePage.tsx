@@ -1,15 +1,18 @@
 import { useRef, useEffect } from 'react';
 import TablePicker from './TablePicker';
 import TableSharePage from './TableSharePage';
-import { useShareTable } from '@/lib/shareRoute';
 
 type SharePageProps = {
+  selectedTable: number | null;
   onUploaded: (tableNumber: number) => void;
   refreshKey: number;
 };
 
-export default function SharePage({ onUploaded, refreshKey }: SharePageProps) {
-  const table = useShareTable();
+export default function SharePage({
+  selectedTable,
+  onUploaded,
+  refreshKey,
+}: SharePageProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const mounted = useRef(false);
 
@@ -19,12 +22,12 @@ export default function SharePage({ onUploaded, refreshKey }: SharePageProps) {
       return;
     }
     sectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [table]);
+  }, [selectedTable]);
 
   return (
     <section id="partager" ref={sectionRef} className="relative w-full scroll-mt-20 px-6 py-24">
       <div className="mx-auto max-w-5xl">
-        {table === null ? (
+        {selectedTable === null ? (
           <>
             <div className="mb-12 text-center">
               <h2 className="mb-3 font-display text-4xl text-marron-500 md:text-5xl">
@@ -38,8 +41,8 @@ export default function SharePage({ onUploaded, refreshKey }: SharePageProps) {
           </>
         ) : (
           <TableSharePage
-            key={table}
-            tableNumber={table}
+            key={selectedTable}
+            tableNumber={selectedTable}
             onUploaded={onUploaded}
             refreshKey={refreshKey}
           />
