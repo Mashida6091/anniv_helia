@@ -30,8 +30,7 @@ export default function SharePage({ onUploaded }: SharePageProps) {
                 Partage ton souvenir
               </h2>
               <p className="mx-auto max-w-xl text-sm text-marron-500/90">
-                Choisis ta table pour ouvrir sa page et y ajouter une photo ou une
-                vidéo.
+                Choisis ta table pour ouvrir sa page et y ajouter une photo.
               </p>
             </div>
             <TablePicker />

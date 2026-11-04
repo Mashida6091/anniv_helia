@@ -1,11 +1,10 @@
 import { useRef, useState } from 'react';
-import { CheckCircle2, Film, ImagePlus, Loader2, Upload } from 'lucide-react';
+import { CheckCircle2, ImagePlus, Images, Loader2, Upload } from 'lucide-react';
 import ConfirmUploadModal from './ConfirmUploadModal';
 import {
   ACCEPTED_TYPES,
   MAX_LABEL,
   formatBytes,
-  getMediaKind,
   saveMediaRecord,
   startUpload,
   uploadErrorMessage,
@@ -51,15 +50,14 @@ export default function MediaUploadCard({ tableNumber, onUploaded }: MediaUpload
 
   const confirmUpload = async () => {
     const file = pendingFile;
-    const kind = file && getMediaKind(file);
-    if (!file || !kind) return;
+    if (!file) return;
 
     setUploading(true);
     setProgress(0);
 
     try {
-      const storagePath = await startUpload(file, kind, setProgress);
-      await saveMediaRecord(kind, storagePath, tableNumber, guestName);
+      const storagePath = await startUpload(file, setProgress);
+      await saveMediaRecord(storagePath, tableNumber, guestName);
       resetPending();
       setSent(true);
       onUploaded(tableNumber);
@@ -74,8 +72,6 @@ export default function MediaUploadCard({ tableNumber, onUploaded }: MediaUpload
     if (uploading) return;
     handleFile(e.dataTransfer.files?.[0]);
   };
-
-  const pendingIsVideo = pendingFile ? getMediaKind(pendingFile) === 'video' : false;
 
   return (
     <>
@@ -105,7 +101,7 @@ export default function MediaUploadCard({ tableNumber, onUploaded }: MediaUpload
           }`}
         >
           {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-          Choisir une photo ou une vidéo
+          Choisir une photo
           <input
             ref={inputRef}
             type="file"
@@ -119,15 +115,13 @@ export default function MediaUploadCard({ tableNumber, onUploaded }: MediaUpload
         <div className="mt-4 flex items-start gap-2 rounded-xl border border-dashed border-kaki-300 bg-kaki-50/60 px-4 py-3 text-xs text-marron-500">
           <ImagePlus className="mt-0.5 h-4 w-4 shrink-0" />
           <span>
-            Tu peux aussi glisser-déposer un fichier ici. Photos JPG, PNG, WEBP,
-            GIF et vidéos MP4, WEBM, MOV — jusqu’à {MAX_LABEL}. L’envoi reprend
-            tout seul en cas de coupure.
+            Tu peux aussi glisser-déposer une photo ici. Formats acceptés : JPG, PNG, WEBP et GIF, jusqu’à {MAX_LABEL}. L’envoi reprend tout seul en cas de coupure.
           </span>
         </div>
 
         <div className="mt-3 flex items-center gap-2 text-xs text-marron-500/80">
-          <Film className="h-3.5 w-3.5" />
-          Photos et vidéos sont rangées automatiquement dans la table {tableNumber}.
+          <Images className="h-3.5 w-3.5" />
+          Tes photos sont rangées automatiquement dans la table {tableNumber}.
         </div>
 
         {sent && (
@@ -149,7 +143,7 @@ export default function MediaUploadCard({ tableNumber, onUploaded }: MediaUpload
 
       <ConfirmUploadModal
         open={!!pendingFile}
-        title={pendingIsVideo ? 'Confirmer la vidéo' : 'Confirmer la photo'}
+        title="Confirmer la photo"
         meta={
           pendingFile
             ? `Table ${tableNumber} · ${formatBytes(pendingFile.size)}${
@@ -161,20 +155,11 @@ export default function MediaUploadCard({ tableNumber, onUploaded }: MediaUpload
         progress={progress}
         preview={
           pendingPreview ? (
-            pendingIsVideo ? (
-              <video
-                src={pendingPreview}
-                controls
-                playsInline
-                className="max-h-[40vh] max-w-full rounded-xl shadow-md"
-              />
-            ) : (
-              <img
-                src={pendingPreview}
-                alt="Aperçu"
-                className="max-h-[40vh] max-w-full rounded-xl object-contain shadow-md"
-              />
-            )
+            <img
+              src={pendingPreview}
+              alt="Aperçu de la photo"
+              className="max-h-[40vh] max-w-full rounded-xl object-contain shadow-md"
+            />
           ) : null
         }
         onCancel={resetPending}

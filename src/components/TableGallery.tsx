@@ -67,8 +67,7 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
           L’album par table
         </h2>
         <p className="mx-auto mb-10 max-w-xl text-center text-sm text-marron-500/90">
-          Retrouve les photos et vidéos de chaque table, classées dans l’ordre
-          où elles ont été ajoutées.
+          Retrouve les photos de chaque table, classées dans l’ordre où elles ont été ajoutées.
         </p>
 
         <div
@@ -99,7 +98,7 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/60 px-5 py-3 text-sm text-marron-500 backdrop-blur-md">
           <span className="inline-flex items-center gap-2">
             <Images className="h-4 w-4" />
-            {loading ? 'Chargement…' : `${items.length} souvenir${items.length > 1 ? 's' : ''} à la table ${activeTable}`}
+            {loading ? 'Chargement…' : `${items.length} photo${items.length > 1 ? 's' : ''} à la table ${activeTable}`}
           </span>
           <AdminUnlock unlocked={!!adminCode} onUnlock={setAdminCode} />
         </div>
@@ -118,39 +117,24 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
           <div className="rounded-3xl border border-dashed border-kaki-300 bg-white/50 px-6 py-16 text-center">
             <Images className="mx-auto mb-3 h-10 w-10 text-kaki-400" />
             <p className="text-marron-500">
-              Aucun souvenir à la table {activeTable} pour l’instant. Sois le
-              premier à en partager un !
+              Aucune photo à la table {activeTable} pour l’instant. Sois la première personne
+              à en partager une !
             </p>
           </div>
         ) : (
           <div className="columns-2 gap-3 md:columns-3 md:gap-5 [column-fill:_balance]">
             {items.map((item) => (
               <figure
-                key={`${item.kind}-${item.id}`}
+                key={item.id}
                 className="group relative mb-3 break-inside-avoid overflow-hidden rounded-2xl shadow-md md:mb-5"
               >
-                {item.kind === 'photo' ? (
-                  <img
-                    src={publicUrl(item)}
-                    alt={item.guest_name || 'Souvenir'}
-                    loading="lazy"
-                    onClick={() => setLightbox(item)}
-                    className="w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="relative cursor-pointer" onClick={() => setLightbox(item)}>
-                    <video
-                      src={publicUrl(item)}
-                      preload="metadata"
-                      muted
-                      playsInline
-                      className="w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                    <span className="pointer-events-none absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
-                      Vidéo
-                    </span>
-                  </div>
-                )}
+                <img
+                  src={publicUrl(item)}
+                  alt={item.guest_name || 'Photo'}
+                  loading="lazy"
+                  onClick={() => setLightbox(item)}
+                  className="w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-105"
+                />
                 {item.guest_name && (
                   <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 text-white">
                     <p className="text-xs text-white/90">par {item.guest_name}</p>
@@ -160,7 +144,7 @@ export default function TableGallery({ activeTable, refreshKey, onSelectTable }:
                   <button
                     onClick={() => handleDelete(item)}
                     disabled={deletingId === item.id}
-                    aria-label="Supprimer ce souvenir"
+                    aria-label="Supprimer cette photo"
                     className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white opacity-100 transition hover:bg-marron-500 disabled:opacity-50 md:opacity-0 md:group-hover:opacity-100"
                   >
                     {deletingId === item.id ? (

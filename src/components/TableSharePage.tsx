@@ -56,8 +56,7 @@ export default function TableSharePage({ tableNumber, onUploaded }: TableSharePa
           Table {tableNumber}
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-sm text-marron-500/90">
-          Ajoute une photo ou une vidéo de ta table. Elle rejoindra l’album de
-          la table {tableNumber}.
+          Ajoute une photo de ta table. Elle rejoindra l’album de la table {tableNumber}.
         </p>
       </div>
 
