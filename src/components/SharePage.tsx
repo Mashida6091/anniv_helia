@@ -5,9 +5,10 @@ import { useShareTable } from '@/lib/shareRoute';
 
 type SharePageProps = {
   onUploaded: (tableNumber: number) => void;
+  refreshKey: number;
 };
 
-export default function SharePage({ onUploaded }: SharePageProps) {
+export default function SharePage({ onUploaded, refreshKey }: SharePageProps) {
   const table = useShareTable();
   const sectionRef = useRef<HTMLElement>(null);
   const mounted = useRef(false);
@@ -36,7 +37,12 @@ export default function SharePage({ onUploaded }: SharePageProps) {
             <TablePicker />
           </>
         ) : (
-          <TableSharePage key={table} tableNumber={table} onUploaded={onUploaded} />
+          <TableSharePage
+            key={table}
+            tableNumber={table}
+            onUploaded={onUploaded}
+            refreshKey={refreshKey}
+          />
         )}
       </div>
     </section>
