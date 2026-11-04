@@ -164,7 +164,6 @@ async function callDeleteFunction(body: Record<string, string>): Promise<DeleteR
 export function deleteMedia(item: MediaItem, code: string): Promise<DeleteResult> {
   return callDeleteFunction({
     code,
-    kind: 'photo',
     mediaId: item.id,
     storagePath: item.storage_path,
   });
