@@ -4,7 +4,6 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import SharePage from './components/SharePage';
 import TableGallery from './components/TableGallery';
-import MusicToggle from './components/MusicToggle';
 
 function Footer() {
   return (
@@ -46,8 +45,6 @@ function App() {
         />
       </main>
       <Footer />
-
-      <MusicToggle />
     </div>
   );
 }
