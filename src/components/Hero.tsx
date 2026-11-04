@@ -34,21 +34,8 @@ export default function Hero() {
           className="animate-fade-in-up mx-auto mt-6 max-w-xl text-base md:text-lg text-marron-500/90"
           style={{ animationDelay: '0.2s' }}
         >
-          Une petite page remplie d’amour, de douceur et de vœux — rien que
-          pour toi, aujourd’hui et toujours.
+          Une page dédiée aux souvenirs pour célébrer cette belle occasion.
         </p>
-
-        <div
-          className="animate-fade-in-up mt-10 flex flex-wrap items-center justify-center gap-4"
-          style={{ animationDelay: '0.4s' }}
-        >
-          <a
-            href="#album"
-            className="rounded-full border border-kaki-300 bg-white/60 px-7 py-3 font-semibold text-kaki-500 backdrop-blur transition hover:bg-kaki-50"
-          >
-            Lire les vœux
-          </a>
-        </div>
       </div>
 
       {/* scroll hint */}
