@@ -3,7 +3,7 @@ import { Heart, Sparkles } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import SharePage from './components/SharePage';
-import TableGallery from './components/TableGallery';
+import AllPhotosGallery from './components/AllPhotosGallery';
 
 function Footer() {
   return (
@@ -24,11 +24,9 @@ function Footer() {
 }
 
 function App() {
-  const [activeTable, setActiveTable] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleUploaded = (tableNumber: number) => {
-    setActiveTable(tableNumber);
+  const handleUploaded = () => {
     setRefreshKey((k) => k + 1);
   };
 
@@ -37,12 +35,8 @@ function App() {
       <Navbar />
       <main>
         <Hero />
-        <SharePage onUploaded={handleUploaded} />
-        <TableGallery
-          activeTable={activeTable}
-          refreshKey={refreshKey}
-          onSelectTable={setActiveTable}
-        />
+        <SharePage onUploaded={handleUploaded} refreshKey={refreshKey} />
+        <AllPhotosGallery refreshKey={refreshKey} />
       </main>
       <Footer />
     </div>
