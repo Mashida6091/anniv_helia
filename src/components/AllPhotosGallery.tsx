@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Images, Loader2, Trash2 } from 'lucide-react';
+import { Download, Images, Loader2, Trash2 } from 'lucide-react';
 import AdminUnlock from './AdminUnlock';
 import MediaLightbox from './MediaLightbox';
 import {
@@ -8,6 +8,7 @@ import {
   publicUrl,
   type MediaItem,
 } from '@/lib/media';
+import { createPhotosArchive } from '@/lib/downloadPhotos';
 
 type AllPhotosGalleryProps = {
   refreshKey: number;
@@ -17,6 +18,8 @@ export default function AllPhotosGallery({ refreshKey }: AllPhotosGalleryProps) 
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [downloadProgress, setDownloadProgress] = useState<{ completed: number; total: number } | null>(null);
   const [lightbox, setLightbox] = useState<MediaItem | null>(null);
   const [adminCode, setAdminCode] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -57,6 +60,37 @@ export default function AllPhotosGallery({ refreshKey }: AllPhotosGalleryProps) 
     }
   };
 
+  const handleDownloadAll = async () => {
+    if (loading || items.length === 0 || downloadProgress) return;
+
+    setDownloadError(null);
+    setDownloadProgress({ completed: 0, total: items.length });
+
+    try {
+      const archive = await createPhotosArchive(items, (completed, total) => {
+        setDownloadProgress({ completed, total });
+      });
+      const url = URL.createObjectURL(archive);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'souvenirs-helia.zip';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch (cause) {
+      if (cause instanceof Error && cause.message === 'archive-too-large') {
+        setDownloadError('L’album est trop volumineux pour être regroupé dans une seule archive.');
+      } else if (cause instanceof Error && cause.message === 'too-many-photos') {
+        setDownloadError('Il y a trop de photos pour créer une seule archive.');
+      } else {
+        setDownloadError('Le téléchargement a échoué. Vérifie ta connexion puis réessaie.');
+      }
+    } finally {
+      setDownloadProgress(null);
+    }
+  };
+
   return (
     <section id="album" className="relative w-full px-6 py-24">
       <div className="mx-auto max-w-5xl">
@@ -75,14 +109,37 @@ export default function AllPhotosGallery({ refreshKey }: AllPhotosGalleryProps) 
         <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white/60 px-5 py-3 text-sm text-marron-500 backdrop-blur-md">
           <span className="inline-flex items-center gap-2">
             <Images className="h-4 w-4" />
-            {loading ? 'Chargement…' : `${items.length} photo${items.length > 1 ? 's' : ''} au total`}
+            {loading ? 'Chargement…' : items.length + ' photo' + (items.length > 1 ? 's' : '') + ' au total'}
           </span>
-          <AdminUnlock unlocked={!!adminCode} onUnlock={setAdminCode} />
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={handleDownloadAll}
+              disabled={loading || items.length === 0 || !!downloadProgress}
+              aria-busy={!!downloadProgress}
+              className="inline-flex items-center gap-2 rounded-full bg-marron-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-marron-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-kaki-400 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {downloadProgress ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="h-4 w-4" />
+              )}
+              {downloadProgress
+                ? 'Préparation ' + downloadProgress.completed + '/' + downloadProgress.total + '…'
+                : 'Télécharger toutes les photos'}
+            </button>
+            <AdminUnlock unlocked={!!adminCode} onUnlock={setAdminCode} />
+          </div>
         </div>
 
         {error && (
           <p className="mb-6 rounded-xl bg-marron-50 px-4 py-2 text-center text-sm text-marron-600">
             {error}
+          </p>
+        )}
+        {downloadError && (
+          <p role="alert" className="mb-6 rounded-xl bg-marron-50 px-4 py-2 text-center text-sm text-marron-600">
+            {downloadError}
           </p>
         )}
 
@@ -106,7 +163,9 @@ export default function AllPhotosGallery({ refreshKey }: AllPhotosGalleryProps) 
               >
                 <img
                   src={publicUrl(item)}
-                  alt={item.guest_name ? `Photo de ${item.guest_name}, table ${item.table_number}` : `Photo, table ${item.table_number}`}
+                  alt={item.guest_name
+                    ? 'Photo de ' + item.guest_name + ', table ' + item.table_number
+                    : 'Photo, table ' + item.table_number}
                   loading="lazy"
                   onClick={() => setLightbox(item)}
                   className="w-full cursor-zoom-in object-cover transition duration-500 group-hover:scale-105"
@@ -114,7 +173,7 @@ export default function AllPhotosGallery({ refreshKey }: AllPhotosGalleryProps) 
                 <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 text-white">
                   <p className="text-xs text-white/90">
                     Table {item.table_number}
-                    {item.guest_name ? ` · par ${item.guest_name}` : ''}
+                    {item.guest_name ? ' · par ' + item.guest_name : ''}
                   </p>
                 </figcaption>
                 {adminCode && (
